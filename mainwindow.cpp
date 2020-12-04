@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <stdlib.h>
 #include <QDateTime>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,8 +28,14 @@ void MainWindow::on_open_clicked()
     }
     else
     {
+        system("v4l2-ctl -d /dev/video0 --set-ctrl=exposure_auto=1");
+        QThread::msleep(100);
+
+        system("v4l2-ctl -d /dev/video0 --set-ctrl=focus_auto=1");
+        QThread::msleep(100);
+
         connect(camera_timer, SIGNAL(timeout()), this, SLOT(update_camera()));
-        camera_timer->start(20);
+        camera_timer->start(50);
     }
 }
 
